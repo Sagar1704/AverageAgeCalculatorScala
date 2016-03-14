@@ -21,7 +21,7 @@ object AverageAge {
         val inputUsers = input.map(line => line.split("\t")).filter(line => (line.length == 2)).map(profile => getUserMap(profile)).flatMap(profile => (profile)).map(profile => (profile._1, profile._2))
 
         val friendAge = inputUsers.join(userAge)
-        val averageAge = friendAge.map(userMap => userMap.swap).map(userMap => (userMap._1._1, (userMap._2, userMap._1._2))).reduceByKey((pair1, pair2) => (pair1._1 + "," + pair2._1, pair1._2 + pair2._2)).map(userMap => (userMap._1, userMap._2._2 / (userMap._2._1.count(_ == ',') + 1))).sortBy(_._2, false).take(20)
+        val averageAge = friendAge.map(userMap => userMap.swap).map(userMap => (userMap._1._1, (userMap._2, userMap._1._2))).reduceByKey((pair1, pair2) => (pair1._1 + "," + pair2._1, pair1._2 + pair2._2)).map(userMap => (userMap._1, userMap._2._2 * 1.0 / (userMap._2._1.count(_ == ',') + 1))).sortBy(_._2, false).take(20)
 
         val output = usersInfo.join(sc.parallelize(averageAge)).sortBy(_._2._2, false).map(userInfo => (userInfo._1 + ", " + userInfo._2._1 + ", " + userInfo._2._2))
         output.saveAsTextFile(".\\output")
